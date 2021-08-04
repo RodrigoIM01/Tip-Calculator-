@@ -1,5 +1,5 @@
 const form = document.querySelector("#form");
-const $buttons = document.querySelectorAll(".button[type='button']");
+const $buttons = document.querySelectorAll(".button[type='submit']");
 const $customInput = document.querySelector("#custom-input");
 const $resetBtn = document.querySelector("#reset");
 const $tipAmount = document.querySelector('#tip-amount')
@@ -14,7 +14,6 @@ $buttons.forEach((btn) => {
         });
         console.log('click')
         btn.classList.add("active");
-        $customInput.value = 0
     });
 });
 
@@ -34,10 +33,11 @@ form.addEventListener("submit", (e) => {
     e.preventDefault();
 
     const formData = new FormData(form);
-    const bill = Number(formData.get("bill"));
-    const person = Number(formData.get("personNumber"));
-    const custom = Number(formData.get("custom"));
+    const bill = formData.get("bill") - 0;
+    const person = formData.get("personNumber") - 0;
+    const custom = formData.get("custom") - 0;
 
+    console.log(custom)
     if(!isNaN(bill) && bill > 0 && person > 0) {
         setValues({
             bill,
@@ -50,27 +50,28 @@ form.addEventListener("submit", (e) => {
 function setValues({ bill, person, custom }) {
     const percent = custom > 0
         ? custom
-        : Number(Array.prototype.find.call($buttons, (btn) =>
+        : Array.prototype.find.call($buttons, (btn) =>
               btn.classList.contains("active")
-          ).value);
+          ).value - 0;
 
-    console.log(bill, person, percent)
-    const tip = tipAmount(Number(bill), percent, person);
-    const totalBill = total(bill, person, tip);
+    console.log(bill, person, custom)
+    const tip = tipAmount(bill - 0, percent);
+    const amount = tip / 5
+    const totalBill = total(bill, person, amount);
 
-    // console.log(Number(tip.toFixed(2)))
-    // console.log(Number(totalBill.toFixed(2)))
 
     if($tipAmount.innerHTML && $totalAmount.innerHTML) {
         $tipAmount.innerHTML = '';
         $totalAmount.innerHTML = '';
     }
-    $tipAmount.innerHTML = `$${tip}`
+
+    $tipAmount.innerHTML = `$${amount.toFixed(2)}`
     $totalAmount.innerHTML = `$${totalBill}`
+    document.querySelector('#custom-input').value = 0;
 }
 
-function tipAmount(amount, percent, person) {
-    const result = ((amount * percent) / 100) / person
+function tipAmount(amount, percent) {
+    const result = ((amount * percent) / 100)
     return Number(result.toFixed(2));
 }
 

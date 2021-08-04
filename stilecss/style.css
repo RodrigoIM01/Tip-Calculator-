@@ -95,6 +95,11 @@ body {
     padding: 12px 4px;
 }
 
+.button.active {
+    background-color: #9fe8df;
+    color: #00474d;
+}
+
 .button:hover {
     background-color: #9fe8df;
     color: #00474d;
